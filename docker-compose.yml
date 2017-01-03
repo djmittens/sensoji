@@ -1,7 +1,7 @@
 version: "2"
 services:
-  app-gateway:
-    image: realm:latest
+  realm:
+    image: sbtdocker/realm:latest
     ports:
       - "9003:9003"
     links:
