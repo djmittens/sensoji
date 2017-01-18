@@ -1,0 +1,1 @@
+This is a super fun project, that i dont know where it will take me but hey.  At least i get to do some stuff thats actually cool.
