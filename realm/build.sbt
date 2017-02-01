@@ -1,6 +1,6 @@
 lazy val realm = (project in file(".")).settings(
   name := "realm",
-  organization := "sbtdocker",
+  organization := "me.ngrid",
   version := "1.0",
   scalaVersion := "2.12.1"
 ).enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
