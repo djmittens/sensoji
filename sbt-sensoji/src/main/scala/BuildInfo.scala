@@ -1,15 +1,16 @@
 import sbt._
 import sbt.Keys._
 
+
 object BuildInfo {
-  val properties: SettingKey[Map[String, String]] = settingKey[Map[String, String]]{
+  lazy val properties: SettingKey[Map[String, String]] = settingKey[Map[String, String]]{
     "Properties for the project, such as name and version"
   }
-  val infoFile: TaskKey[File] = taskKey[File] {
+  lazy val infoFile: TaskKey[File] = taskKey[File] {
     "Generated build information file for the project"
   }
 
-  val settings = Seq(
+  def settings = Seq(
     properties := Map.empty,
     properties += "version" -> version.value,
     properties += "name" -> name.value,
@@ -24,10 +25,10 @@ object BuildInfo {
   )
 
   def makeInfo(file: File, props: Map[String, String]): File = {
+    println(props)
 
-    val lines = for{
-      (key, value) <- props
-    } yield s"""val $key = "$value""""
+    lazy val lines = props.map(a => "val " + a._1 + " = " + a._2)
+//    lazy val lines = props.map(a => s"""val ${a._1} = "${a._2}"""")
 
     val source =
       s"""object BuildInfo {

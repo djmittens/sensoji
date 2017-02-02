@@ -1,8 +1,12 @@
 lazy val sbtplugin = project in file("sbt-sensoji")
 
-lazy val realm = project in file("realm")
-//lazy val realm = sensoji.common.MicroService("realm")
-lazy val client = project in file("client")
-
 lazy val odyssey = common.MicroService("odyssey")
+
+//javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+
+initialize := {
+  val _ = initialize.value
+  if (sys.props("java.specification.version") != "1.8")
+    sys.error("Java 8 is required for this project.")
+}
 
