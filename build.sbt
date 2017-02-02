@@ -1,4 +1,3 @@
-lazy val sbtplugin = project in file("sbt-sensoji")
 
 lazy val odyssey = common.MicroService("odyssey")
 

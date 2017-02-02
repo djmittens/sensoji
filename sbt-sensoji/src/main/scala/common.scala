@@ -10,7 +10,7 @@ object common {
 
   val commonSettings = BuildInfo.settings ++ Seq(
     organization := "me.ngrid",
-    scalaVersion := "2.11.8"
+    scalaVersion := "2.12.1"
   )
 
   val commonDependencies = Seq(

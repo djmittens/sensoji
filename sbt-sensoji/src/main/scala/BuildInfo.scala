@@ -27,8 +27,7 @@ object BuildInfo {
   def makeInfo(file: File, props: Map[String, String]): File = {
     println(props)
 
-    lazy val lines = props.map(a => "val " + a._1 + " = " + a._2)
-//    lazy val lines = props.map(a => s"""val ${a._1} = "${a._2}"""")
+    lazy val lines = props.map(a => s"""val ${a._1} = "${a._2}"""")
 
     val source =
       s"""object BuildInfo {
