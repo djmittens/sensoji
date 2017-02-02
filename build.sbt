@@ -1,5 +1,5 @@
 //lazy val sbtSensoji = (project in file("sbt-sensoji"))
-lazy val sbtSensoji = project in file("sbt-sensoji")
+lazy val sensojiplugin = project in file("sbt-sensoji")
 
 //SensojiPlugin
 
