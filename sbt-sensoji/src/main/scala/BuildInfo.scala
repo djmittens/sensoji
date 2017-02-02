@@ -20,7 +20,7 @@ object BuildInfo {
       )
     },
 
-    sourceGenerators += infoFile.map(x => Seq(x.asFile)).taskValue
+    sourceGenerators in Compile += infoFile.map(x => Seq(x.asFile)).taskValue
   )
 
   def makeInfo(file: File, props: Map[String, String]): File = {
