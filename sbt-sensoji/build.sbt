@@ -1,4 +1,4 @@
-lazy val plugin = (project in file(".")).settings(
+lazy val `sbt-sensoji` = (project in file(".")).settings(
   sbtPlugin := true,
   name := "sbt-sensoji",
   organization := "me.ngrid.sensoji",

@@ -6,10 +6,8 @@ object sensoji {
 
   def RPCService(name: String, org: String, desc: String = "RPC Microservice built with Sensoji"): Project = {
     Project(name, file(name)).
-      settings(
-        organization := org
-      ).
-      settings(commonSettings ++ commonDependencies ++ rpcServiceSettings)
+      settings( organization := org, description := desc)
+      .settings(commonSettings ++ commonDependencies ++ rpcServiceSettings : _*)
   }
 
   lazy val commonSettings: Seq[Setting[_]] = Seq(

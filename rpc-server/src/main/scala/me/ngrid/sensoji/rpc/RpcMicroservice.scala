@@ -12,6 +12,5 @@ class RpcMicroservice extends TwitterServer{
     */
   def main():Unit = {
     println("helloworl")
-
   }
 }
