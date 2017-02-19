@@ -2,7 +2,7 @@ import sbt._
 import sbt.Keys._
 
 
-object BuildInfo {
+object BuildInfoTask {
   lazy val properties: SettingKey[Map[String, String]] = settingKey[Map[String, String]]{
     "Properties for the project, such as name and version"
   }
@@ -16,7 +16,7 @@ object BuildInfo {
     properties += "name" -> name.value,
     infoFile := {
       makeInfo(
-        (sourceManaged in Compile).value / "BuildInfo.scala",
+        (sourceManaged in Compile).value / "BuildInfoTask.scala",
         properties.value
       )
     },
@@ -31,7 +31,7 @@ object BuildInfo {
 
     val source =
       s"""object BuildInfo {
-         |${lines mkString "\n"}
+         |  ${lines mkString "\n"}
          |}
      """.stripMargin
 
