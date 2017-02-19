@@ -4,7 +4,7 @@ import sbt._
 object sensoji {
   val SensojiVersion = "0.1-SNAPSHOT"
 
-  def RPCService(name: String, org: String, desc: String): Project = {
+  def RPCService(name: String, org: String, desc: String = "RPC Microservice built with Sensoji"): Project = {
     Project(name, file(name)).
       settings(
         organization := org

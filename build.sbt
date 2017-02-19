@@ -1,12 +1,6 @@
 val Organization = "me.ngrid.sensoji"
 
-lazy val root = (project in file(".")).enablePlugins(ScalaUnidocPlugin).settings(
-  autoAPIMappings := true
-//  name := "sensoji",
-//  unidocProjectFilter in (unidoc) := inAnyProject -- inProjects(`sbt-sensoji`)
-)
-
-lazy val odyssey = sensoji.RPCService("odyssey", Organization, "RPC Microservice built with Sensoji").dependsOn(`rpc-server`)
+lazy val odyssey = sensoji.RPCService("odyssey", Organization).dependsOn(`rpc-server`)
 
 //javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
@@ -26,4 +20,4 @@ lazy val `rpc-server` = (project in file("rpc-server")).
   enablePlugins(JavaAppPackaging)
 
 
-//lazy val `sbt-sensoji` = project in file("sbt-sensoji")
+lazy val `sbt-sensoji` = project in file("sbt-sensoji")
