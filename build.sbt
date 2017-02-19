@@ -12,7 +12,10 @@ initialize := {
   if (sys.props("java.specification.version") != "1.8")
     sys.error("Java 8 is required for this project.")
 }
-lazy val odyssey = sensoji.RPCService("odyssey", Organization)
+lazy val odyssey = sensoji.RPCService("odyssey", Organization).
+  settings(dependencies.finagleHttp).
+  enablePlugins(JavaAppPackaging).
+  dependsOn(`rpc-server`)
 
 lazy val `rpc-server` = (project in file("rpc-server")).
   settings(
@@ -23,4 +26,6 @@ lazy val `rpc-server` = (project in file("rpc-server")).
   ).settings(dependencies.finagleCore ++ dependencies.finagleServer).
   enablePlugins(JavaAppPackaging)
 
-lazy val `sbt-sensoji` = project in file("sbt-sensoji")
+lazy val `sbt-sensoji` = (project in file("sbt-sensoji")).settings(
+  scalaVersion := "2.12.1"
+)
