@@ -23,7 +23,7 @@ lazy val `rpc-server` = (project in file("rpc-server")).
     organization := Organization,
     description := "Utilities for building rpc microservices",
     scalaVersion := "2.12.1"
-  ).settings(dependencies.finagleCore ++ dependencies.finagleServer).
+  ).settings(dependencies.finagleCore ++ dependencies.finagleServer : _*).
   enablePlugins(JavaAppPackaging)
 
 lazy val `sbt-sensoji` = (project in file("sbt-sensoji")).settings(
