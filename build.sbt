@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).settings(
   publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 ).enablePlugins(ScalaUnidocPlugin)
-  .aggregate(`rpc-server`, odyssey, `sbt-sensoji`)
+  .aggregate(`rpc-server`, odyssey)
 
 initialize := {
   val _ = initialize.value
