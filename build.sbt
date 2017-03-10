@@ -3,6 +3,7 @@ val Organization = "me.ngrid.sensoji"
 lazy val root = (project in file(".")).settings(
   scalaVersion := "2.12.1",
   scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
+  publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 ).enablePlugins(ScalaUnidocPlugin)
   .aggregate(`rpc-server`, odyssey, `sbt-sensoji`)

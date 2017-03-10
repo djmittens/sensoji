@@ -22,7 +22,7 @@ object sensoji {
   )
 
   lazy val rpcServiceSettings = Seq(
-    libraryDependencies += "me.ngrid" %% "rpc-server" % SensojiVersion,
+    libraryDependencies += "me.ngrid.sensoji" %% "rpc-server" % SensojiVersion,
     libraryDependencies += "com.twitter" %% "twitter-server" % TwitterServerVersion,
     libraryDependencies += "com.twitter" %% "finagle-stats" % FinagleVersion
   )
