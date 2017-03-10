@@ -2,7 +2,7 @@ val Organization = "me.ngrid.sensoji"
 
 lazy val root = (project in file(".")).settings(
   scalaVersion := "2.12.1",
-  scalacOptions in (ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
+  scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 ).enablePlugins(ScalaUnidocPlugin)
   .aggregate(`rpc-server`, odyssey, `sbt-sensoji`)
@@ -13,7 +13,7 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 lazy val odyssey = sensoji.RPCService("odyssey", Organization).
-  settings(dependencies.finagleHttp).
+  settings(libraryDependencies ++= dependencies.finagleHttp).
   enablePlugins(JavaAppPackaging).
   dependsOn(`rpc-server`)
 
@@ -23,7 +23,7 @@ lazy val `rpc-server` = (project in file("rpc-server")).
     organization := Organization,
     description := "Utilities for building rpc microservices",
     scalaVersion := "2.12.1"
-  ).settings(dependencies.finagleCore ++ dependencies.finagleServer : _*).
+  ).settings { libraryDependencies ++= dependencies.sensojiServer: _* }.
   enablePlugins(JavaAppPackaging)
 
 lazy val `sbt-sensoji` = (project in file("sbt-sensoji")).settings(

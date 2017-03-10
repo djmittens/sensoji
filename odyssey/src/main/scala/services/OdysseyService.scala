@@ -2,9 +2,12 @@ package services
 
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Request, Response}
-import me.ngrid.sensoji.rpc.RpcMicroservice
+import com.twitter.util.Future
 
 class OdysseyService extends Service[Request, Response]{
-  def ping(): String = "Pong"
-  def pong(): String = "Ping"
+  override def apply(request: Request): Future[Response] = {
+    val r = Response()
+    r.setContentString("Pong")
+    Future(r)
+  }
 }

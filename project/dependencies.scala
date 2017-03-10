@@ -1,21 +1,24 @@
 import sbt._
-import sbt.Keys._
 
 object dependencies {
   val FinagleVersion = "6.42.0"
 
+  lazy val twitterResolver: URLRepository = Resolver.url("Twitter maven", url("http://maven.twttr.com/"))
+
   lazy val finagleCore = Seq(
-    resolvers += Resolver.url("Twitter maven", url("http://maven.twttr.com/")),
-    libraryDependencies += "com.twitter" %% "finagle-core" % FinagleVersion,
-    libraryDependencies += "com.twitter" %% "finagle-thrift" % FinagleVersion
+    "com.twitter" %% "finagle-core" % FinagleVersion,
+    "com.twitter" %% "finagle-thrift" % FinagleVersion
   )
 
   lazy val finagleServer = Seq(
-    libraryDependencies += "com.twitter" %% "twitter-server" % "1.27.0",
-    libraryDependencies += "com.twitter" %% "finagle-stats" % FinagleVersion
+    "com.twitter" %% "twitter-server" % "1.27.0",
+    "com.twitter" %% "finagle-stats" % FinagleVersion
   )
 
   lazy val finagleHttp = Seq(
-    libraryDependencies += "com.twitter" %% "finagle-http" % FinagleVersion
+    "com.twitter" %% "finagle-http" % FinagleVersion
   )
+
+  lazy val sensojiServer: Seq[ModuleID] =
+    (finagleCore ++ finagleServer).map(_ % "provided")
 }
