@@ -16,23 +16,3 @@ scala:
 
 jdk:
   - oraclejdk8
-
-env:
-  # This splits the build into two parts
-  matrix:
-    - TEST_COMMAND="scripted sbt-assembly/*"
-    - TEST_COMMAND="scripted merging/* caching/*"
-
-script:
-  - sbt ++$TRAVIS_SCALA_VERSION -Dfile.encoding=UTF8 -J-XX:ReservedCodeCacheSize=256M "$TEST_COMMAND"
-
-  # Tricks to avoid unnecessary cache updates
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
-
-# Email specific recipient all the time
-notifications:
-  email:
-    recipients:
-      secure: "Some/BASE64/STUFF="
-    on_success: always # default: change 2.12.1
