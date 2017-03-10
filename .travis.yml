@@ -1,6 +1,6 @@
 # Use container-based infrastructure
 # Shamelessly stolen from http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
-sudo: false
+#sudo: false
 
 language: scala
 
@@ -11,8 +11,8 @@ cache:
     - $HOME/.sbt/boot/
 
 # This is an sbt plugin, so this section is for demo purpose
-scala:
-   - 2.12.1
+#scala:
+   #- 2.12.1
 
 jdk:
   - oraclejdk8
