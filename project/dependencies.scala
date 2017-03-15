@@ -20,5 +20,5 @@ object dependencies {
   )
 
   lazy val sensojiServer: Seq[ModuleID] =
-    (finagleCore ++ finagleServer).map(_ % "provided")
+    (finagleCore ++ finagleServer ++ finagleHttp).map(_ % "provided")
 }
