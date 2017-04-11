@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).settings(
   publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 ).enablePlugins(ScalaUnidocPlugin)
-  .aggregate(`rpc-server`, odyssey)
+  .aggregate(`server-util`, odyssey)
 
 initialize := {
   val _ = initialize.value
@@ -16,9 +16,9 @@ initialize := {
 lazy val odyssey = sensoji.RPCService("odyssey", Organization).
   settings(libraryDependencies ++= dependencies.finagleHttp).
   enablePlugins(JavaAppPackaging).
-  dependsOn(`rpc-server`)
+  dependsOn(`server-util`)
 
-lazy val `rpc-server` = (project in file("rpc-server")).
+lazy val `server-util` = (project in file("server-util")).
   settings(
     name := "rpc-server",
     organization := Organization,
