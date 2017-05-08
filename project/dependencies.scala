@@ -21,4 +21,6 @@ object dependencies {
 
   lazy val sensojiServer: Seq[ModuleID] =
     (finagleCore ++ finagleServer ++ finagleHttp).map(_ % "provided")
+
+  lazy val catsLibrary = "org.typelevel" %% "cats" % "0.9.0"
 }

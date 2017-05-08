@@ -24,7 +24,8 @@ lazy val `server-util` = (project in file("server-util")).
     organization := Organization,
     description := "Utilities for building rpc microservices",
     scalaVersion := "2.12.1"
-  ).settings { libraryDependencies ++= dependencies.sensojiServer: _* }.
+  ).settings(libraryDependencies ++= dependencies.sensojiServer).
+  settings(libraryDependencies += dependencies.catsLibrary).
   enablePlugins(JavaAppPackaging)
 
 lazy val `sbt-sensoji` = (project in file("sbt-sensoji")).settings(
