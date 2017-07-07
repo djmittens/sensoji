@@ -1,5 +1,6 @@
 val Organization = "me.ngrid.sensoji"
 
+//TODO: Add publishing settings.
 lazy val root = (project in file(".")).settings(
   scalaVersion := "2.12.1",
   scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
@@ -28,6 +29,4 @@ lazy val `server-util` = (project in file("server-util")).
   settings(libraryDependencies += dependencies.catsLibrary).
   enablePlugins(JavaAppPackaging)
 
-lazy val `sbt-sensoji` = (project in file("sbt-sensoji")).settings(
-  scalaVersion := "2.12.1"
-)
+val `sbt-sensoji` = RootProject(file("sbt-sensoji"))

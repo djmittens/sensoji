@@ -1,3 +1,4 @@
+//TODO: Add publishing settings.
 lazy val `sbt-sensoji` = (project in file(".")).settings(
   sbtPlugin := true,
   name := "sbt-sensoji",
@@ -10,5 +11,6 @@ lazy val `sbt-sensoji` = (project in file(".")).settings(
     "-language:_",
     "-target:jvm-1.6",
     "-encoding", "UTF-8"
-  )
+  ),
+  BuildInfoTask.settings
 )

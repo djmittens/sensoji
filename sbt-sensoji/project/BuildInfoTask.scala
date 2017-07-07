@@ -1,5 +1,5 @@
-import sbt._
 import sbt.Keys._
+import sbt._
 
 
 object BuildInfoTask {
@@ -12,7 +12,7 @@ object BuildInfoTask {
 
   def settings = Seq(
     properties := Map.empty,
-    properties += "version" -> version.value,
+    properties += "version" -> (version in ThisBuild).value,
     properties += "name" -> name.value,
     infoFile := {
       makeInfo(
@@ -31,7 +31,7 @@ object BuildInfoTask {
 
     val source =
       s"""object BuildInfo {
-         |  ${lines mkString "\n  "}
+         |  ${lines mkString "\n"}
          |}
      """.stripMargin
 
