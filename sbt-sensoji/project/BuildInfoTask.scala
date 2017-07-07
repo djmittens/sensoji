@@ -27,11 +27,19 @@ object BuildInfoTask {
   def makeInfo(file: File, props: Map[String, String]): File = {
     println(props)
 
-    val lines = props.map(a => s"""val ${a._1} = "${a._2}"""")
+    val lines = props.map{ a =>
+      s"""
+         |  /**
+         |  * ${a._1} -> ${a._2}
+         |  */
+         |  val ${a._1} = "${a._2}"
+         |""".stripMargin
+    }
 
     val source =
-      s"""object BuildInfo {
-         |  ${lines mkString "\n"}
+      s"""
+         |object BuildInfo {
+         |  ${lines mkString "\n  "}
          |}
      """.stripMargin
 

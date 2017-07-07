@@ -7,12 +7,17 @@ object sensoji {
   val FinagleVersion = "6.42.0"
   val TwitterServerVersion = "1.27.0"
 
-  def RPCService(name: String, org: String, desc: String = "RPC Microservice built with Sensoji"): Project = {
+  def RPCService(name: String,
+                 org: String,
+                 desc: String = "RPC Microservice built with Sensoji",
+                 sensojiVersion: String = SensojiVersion,
+                 finagleVersion: String = FinagleVersion,
+                 twitterServerVersion: String = TwitterServerVersion
+                ): Project = {
     Project(name, file(name)).
       settings(organization := org, description := desc).
       settings(commonSettings ++ commonDependencies ++ rpcServiceSettings: _*)
   }
-
 
   lazy val commonSettings: Seq[Setting[_]] = Seq(
     scalaVersion := "2.12.2",
