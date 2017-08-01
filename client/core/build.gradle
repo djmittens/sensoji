@@ -1,10 +1,13 @@
 apply plugin: "java"
+apply plugin: "scala"
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
-
+//sourceSets.main.java.srcDirs = [ "src/" ]
+dependencies {
+    compile 'org.scala-lang:scala-library:2.12.2'
+}
 
 eclipse.project {
     name = appName + "-core"
