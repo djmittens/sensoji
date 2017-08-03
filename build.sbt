@@ -1,13 +1,12 @@
 val Organization = "me.ngrid.sensoji"
 
 //TODO: Add publishing settings.
-lazy val root = (project in file(".")).settings(
+lazy val sensojii = (project in file(".")).settings(
   scalaVersion := "2.12.1",
   scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
   publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
-).enablePlugins(ScalaUnidocPlugin)
-  .aggregate(`server-util`, odyssey)
+).enablePlugins(ScalaUnidocPlugin).aggregate(`server-util`, odyssey)
 
 initialize := {
   val _ = initialize.value
