@@ -5,7 +5,6 @@ import scala.annotation.tailrec
 object Trampolining {
 
   import State._
-  import Trampoline._
 
   def main(args: Array[String]): Unit = {
 
@@ -49,78 +48,76 @@ object Trampolining {
     case _ :: xs => More(() => even(xs))
   }
 
-}
+  object State {
+    def getState[S]: State[S, S] = State(s => Done(s -> s))
 
-object State {
-  def getState[S]: State[S, S] = State(s => Done(s -> s))
+    def setState[S](s: S): State[S, Unit] = State(_ => Done(() -> s))
 
-  def setState[S](s: S): State[S, Unit] = State(_ => Done(() -> s))
+    def pureState[S, A](a: A): State[S, A] = State(s => Done(a -> s))
+  }
 
-  def pureState[S, A](a: A): State[S, A] = State(s => Done(a -> s))
-}
+  case class State[S, A](runS: S => Trampoline[(A, S)]) {
+    def map[B](f: A => B): State[S, B] =
+      State[S, B](s => {
+        runS(s).map {
+          case (a, s1) => f(a) -> s1
+        }
+      })
 
-case class State[S, A](runS: S => Trampoline[(A, S)]) {
-  def map[B](f: A => B): State[S, B] =
-    State[S, B](s => {
-      runS(s).map {
-        case (a, s1) => f(a) -> s1
-      }
-    })
+    def flatMap[B](f: A => State[S, B]): State[S, B] =
+      State[S, B](s => More(() => {
+        runS(s) flatMap {
+          case (a, s1) => More(() => f(a) runS s1)
+        }
+      }))
+  }
 
-  def flatMap[B](f: A => State[S, B]): State[S, B] =
-    State[S, B](s => More(() => {
-      runS(s) flatMap {
-        case (a, s1) => More(() => f(a) runS s1)
-      }
-    }))
-}
-
-object Trampoline {
   implicit def step[A](a: => A): Trampoline[A] = More(() => Done(a))
-}
 
-sealed trait Trampoline[+A] {
-  @tailrec
-  final def runT: A = this match {
-    case More(k) => k().runT
-    case Done(v) => v
-    case k @ FlatMap(_, _) =>
-      k.resume match {
-        case Right(v) => v
-        case Left(k) => k().runT
+  sealed trait Trampoline[+A] {
+    @tailrec
+    final def runT: A = this match {
+      case More(k) => k().runT
+      case Done(v) => v
+      case k @ FlatMap(_, _) =>
+        k.resume match {
+          case Right(v) => v
+          case Left(k) => k().runT
+        }
+    }
+
+    @tailrec
+    final def resume: Either[() => Trampoline[A], A] = this match {
+      case Done(v) => Right(v)
+      case More(k) => Left(k)
+      case FlatMap(a, f) => a match {
+        case Done(v) => f(v).resume
+        case More(k) => Left(() => FlatMap(k(), f))
+        case FlatMap(b, g) =>
+          (FlatMap(b, (x: Any) => FlatMap(g(x), f)): Trampoline[A]).resume
+      }
+    }
+
+    def map[B](f: A => B): Trampoline[B] = flatMap(x => Done(f(x)))
+
+    final def flatMap[B](f: A => Trampoline[B]): Trampoline[B] = this match {
+      case FlatMap(a, g) => FlatMap(a, (x: Any) => g(x) flatMap f)
+      case x => FlatMap(x, f)
+    }
+
+    final def zip[B](b: Trampoline[B]): Trampoline[(A, B)] =
+      (this.resume, b.resume) match {
+        case (Right(a), Right(b)) => Done((a, b))
+        case (Left(a), Left(b)) => More(() => a() zip b())
+        case (Left(a), Right(b)) => More(() => a() zip Done(b))
+        case (Right(a), Left(b)) => More(() => Done(a) zip b())
       }
   }
 
-  @tailrec
-  final def resume: Either[() => Trampoline[A], A] = this match {
-    case Done(v) => Right(v)
-    case More(k) => Left(k)
-    case FlatMap(a, f) => a match {
-      case Done(v) => f(v).resume
-      case More(k) => Left(() => FlatMap(k(), f))
-      case FlatMap(b, g) =>
-        (FlatMap(b, (x: Any) => FlatMap(g(x), f)): Trampoline[A]).resume
-    }
-  }
+  sealed case class FlatMap[A, +B] (sub: Trampoline[A], k: A => Trampoline[B]) extends Trampoline[B]
 
-  def map[B](f: A => B): Trampoline[B] = flatMap(x => Done(f(x)))
+  case class More[+A](k: () => Trampoline[A]) extends Trampoline[A]
 
-  final def flatMap[B](f: A => Trampoline[B]): Trampoline[B] = this match {
-    case FlatMap(a, g) => FlatMap(a, (x: Any) => g(x) flatMap f)
-    case x => FlatMap(x, f)
-  }
-
-  final def zip[B](b: Trampoline[B]): Trampoline[(A, B)] =
-    (this.resume, b.resume) match {
-      case (Right(a), Right(b)) => Done((a, b))
-      case (Left(a), Left(b)) => More(() => a() zip b())
-      case (Left(a), Right(b)) => More(() => a() zip Done(b))
-      case (Right(a), Left(b)) => More(() => Done(a) zip b())
-    }
+  case class Done[+A](result: A) extends Trampoline[A]
 }
 
-sealed case class FlatMap[A, +B] (sub: Trampoline[A], k: A => Trampoline[B]) extends Trampoline[B]
-
-case class More[+A](k: () => Trampoline[A]) extends Trampoline[A]
-
-case class Done[+A](result: A) extends Trampoline[A]
