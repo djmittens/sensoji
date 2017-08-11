@@ -1,52 +1,76 @@
 package me.ngrid
 
+
 import scala.annotation.tailrec
-import scala.language.higherKinds
+import scala.language.{higherKinds, implicitConversions}
 
 object FreeMonad {
-  type Trampoline[+A] = Free[Function0, A]
 
+  implicit def step[A](a: => A): Trampoline[A] = More[Function0, A](() => Done(a))
 
   def main(args: Array[String]): Unit = {
     val hello: Trampoline[Unit] = for {
       _ <- println("hello ")
       _ <- println("world")
     } yield ()
-    hello.run
+
+    runS(hello zip hello)
+  }
+
+  def runS[A](f: Free[Function0, A]): A = f.resume match {
+    case Right(a) => a
+    case Left(k) => runS(k())
   }
 
   type Trampoline[+A] = Free[Function0, A]
 
   sealed trait Free[S[+ _], +A] {
 
-    private case class FlatMap[S1[+_], A1, +B]
-    (
-      a: Free[S1, A1],
-      f: A1 => Free[S1, B]
-    ) extends Free[S1, B]
-
-    def runT: A = this match {
-      case Done(a) => a
-      case More(k) => k().runT
-    }
-
     @tailrec
-    final def resume(implicit S: Functor[S]) : Either[S[Free[S, A]], A] = this match {
+    final def resume(implicit S: Functor[S]): Either[S[Free[S, A]], A] = this match {
       case Done(a) => Right(a)
       case More(k) => Left(k)
-      case a FlatMap f => a match {
-        case Done (i) => f(i).resume
-        case More(l) => Left(S.map(l)(_ flatMap f))
-        case b FlatMap g => b.flatMap((x: Any) => g(x) flatMap f).resume
-      }
+      //      case k@FlatMap(_: Free[S, A], _:Function1[A,Free[S, A]]) => k.resumeF
+      case FlatMap(a, f) =>
+        a match {
+          case Done(i) => f(i).resume
+          case More(l) => Left(S.map(l)(_.flatMap(f)))
+          case FlatMap(b, g) =>
+            b.flatMap((x: Any) => g(x).flatMap(f)).resume
+        }
     }
 
-    def flatMap[B](f: A => Free[S, B]): Free[S, B] = FlatMap(this, f)
+    final def flatMap[B](f: A => Free[S, B]): Free[S, B] = FlatMap(this, f)
 
+    final def map[B](f: A => B): Free[S, B] = flatMap((a) => Done(f(a)))
+
+    final def zip[B](f: Free[S, B])(implicit S: Functor[S]): Free[S, (A, B)] = (resume, f.resume) match {
+      case (Left(a), Left(b)) =>
+        More(S.map(a) { x =>
+          More(S.map(b)(y => x zip y))
+        })
+
+      case (Left(a), Right(b)) =>
+        More(S.map(a)(x => x zip Done(b)))
+
+      case (Right(b), Left(a)) =>
+        More(S.map(a)(x => Done(b) zip x ))
+
+      case (Right(a), Right(b)) =>
+        Done(a -> b)
+
+    }
   }
 
-  case class Done[S[+_], +A](a: A) extends Free[S, A]
-  case class More[S[+_], +A](k: S[Free[S, A]]) extends Free[S, A]
+  final case class FlatMap[S1[+ _], A1, +B]
+  (
+    a: Free[S1, A1],
+    f: A1 => Free[S1, B]
+  ) extends Free[S1, B]
+
+  final case class Done[S[+ _], +A](a: A) extends Free[S, A]
+
+  final case class More[S[+ _], +A](k: S[Free[S, A]]) extends Free[S, A]
 
 
   trait Functor[F[_]] {
@@ -54,9 +78,10 @@ object FreeMonad {
   }
 
   object Functor {
-    implicit val f0Functor = new Functor[Function0] {
+    implicit val f0Functor: Functor[Function0] = new Functor[Function0] {
       override def map[A, B](m: () => A)(f: (A) => B): () => B = () => f(m())
     }
   }
+
 }
 
