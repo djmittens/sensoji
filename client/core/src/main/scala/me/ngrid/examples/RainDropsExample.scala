@@ -1,4 +1,4 @@
-package me.ngrid
+package me.ngrid.examples
 
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch

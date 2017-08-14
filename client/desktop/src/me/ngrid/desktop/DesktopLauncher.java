@@ -2,7 +2,7 @@ package me.ngrid.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import me.ngrid.RainDropsExample;
+import me.ngrid.examples.RainDropsExample;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
