@@ -1,19 +1,66 @@
 package me.ngrid.examples
 
 import com.badlogic.gdx.audio.{Music, Sound}
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.math.{MathUtils, Rectangle, Vector3}
 import com.badlogic.gdx.utils.TimeUtils
-import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input}
+import com.badlogic.gdx._
 
-class RainDropsExample extends ApplicationAdapter {
+class DropGame extends Game {
+  var batch: SpriteBatch = _
+  var font: BitmapFont = _
+
+  override def create(): Unit = {
+    batch = new SpriteBatch()
+    font = new BitmapFont()
+    this.setScreen(new MainMenuScreen(this))
+  }
+
+}
+
+class MainMenuScreen(var game: DropGame) extends Screen {
+  val camera: OrthographicCamera = new OrthographicCamera()
+  camera.setToOrtho(false, 800, 480)
+
+  override def resume(): Unit = {}
+
+  override def show(): Unit = {}
+
+  override def pause(): Unit = {}
+
+  override def hide(): Unit = {}
+
+  override def resize(width: Int, height: Int): Unit = {}
+
+  override def dispose(): Unit = {}
+
+  override def render(delta: Float): Unit = {
+    Gdx.gl.glClearColor(0, 0, 0.2f, 1)
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+    camera.update()
+    game.batch.setProjectionMatrix(camera.combined)
+
+    game.batch.begin()
+    game.font.draw(game.batch, "Welcome to Drop !!!", 100, 150)
+    game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100)
+    game.batch.end()
+
+    if(Gdx.input.isTouched()) {
+      game.setScreen(new RainDropsExample(game).create())
+      dispose()
+    }
+  }
+}
+
+class RainDropsExample(val game: Game) extends Screen{
   var assets: Assets = _
   var bucket: Bucket = _
   var rainDrops: List[RainDrop] = List()
   var lastDropTime: Long = 0
 
-  override def create(): Unit = {
+  def create(): RainDropsExample = {
     assets = Assets(
       dropImage = new Texture(Gdx.files.internal("droplet.png")),
       dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav")),
@@ -26,10 +73,11 @@ class RainDropsExample extends ApplicationAdapter {
     assets.rainMusic.play()
     assets.camera.setToOrtho(false, 800, 480)
     bucket = Bucket( new Texture(Gdx.files.internal("bucket.png")))
+    this
   }
 
 
-  override def render(): Unit = {
+  def render(): Unit = {
     Gdx.gl.glClearColor(0, 0, 0.2f, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     assets.camera.update()
@@ -98,6 +146,18 @@ class RainDropsExample extends ApplicationAdapter {
     assets.rainMusic.dispose()
     assets.batch.dispose()
   }
+
+  override def show(): Unit = {}
+
+  override def render(delta: Float): Unit = render()
+
+  override def hide(): Unit = {}
+
+  override def resume(): Unit = {}
+
+  override def pause(): Unit = {}
+
+  override def resize(width: Int, height: Int): Unit = {}
 }
 
 case class Bucket (image: Texture) extends Rectangle with Drawble2D {
