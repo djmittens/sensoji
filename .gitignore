@@ -2,6 +2,7 @@
 *.swp
 .idea/
 target/
+*.blend1
 
 ## Java
 

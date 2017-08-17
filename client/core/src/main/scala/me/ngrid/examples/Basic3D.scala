@@ -21,6 +21,10 @@ class Basic3D extends ApplicationListener{
   var environment: Environment = _
 
   val instances: mutable.ArrayBuffer[ModelInstance] = ArrayBuffer()
+
+  var ship: ModelInstance = _
+  val invaders: ArrayBuffer[ModelInstance] = ArrayBuffer()
+  val blocks: ArrayBuffer[ModelInstance] = ArrayBuffer()
   var loading = true
 
   override def resume(): Unit = {}
@@ -30,7 +34,7 @@ class Basic3D extends ApplicationListener{
   override def create(): Unit = {
     modelBatch = new ModelBatch()
     cam = new PerspectiveCamera(67, Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-    cam.position.set(1f, 1f, 1f)
+    cam.position.set(10f, 10f, 10f)
     cam.lookAt(0, 0, 0)
     cam.near = 1f
     cam.far = 300f
@@ -49,7 +53,8 @@ class Basic3D extends ApplicationListener{
 //    model = loader.loadModel(Gdx.files.internal("ship.obj"))
 
     assets = new AssetManager()
-    assets.load("ship.obj", classOf[Model])
+//    assets.load("ship.g3db", classOf[Model])
+    assets.load("level.g3db", classOf[Model])
 
     camController  = new CameraInputController(cam)
     Gdx.input.setInputProcessor(camController)
@@ -72,20 +77,42 @@ class Basic3D extends ApplicationListener{
 
     modelBatch.begin(cam)
     instances.foreach(modelBatch.render(_, environment))
+
     modelBatch.end()
   }
 
   def doneLoading (): Unit = {
-    val model = assets.get("ship.obj", classOf[Model])
-    instances += new ModelInstance(model)
-    instances ++= (for {
-      x <- (-5f).to(5f, 2)
-      z <- (-5f).to(5f, 2)
-    } yield {
-      val instance = new ModelInstance(model)
-      instance.transform.setTranslation(x, 0, z)
-      instance
-    })
+    val model = assets.get("level.g3db", classOf[Model])
+//    instances += new ModelInstance(model)
+//    instances ++= (for {
+//      x <- (-5f).to(5f, 2)
+//      z <- (-5f).to(5f, 2)
+//    } yield {
+//      val instance = new ModelInstance(model)
+//      instance.transform.setTranslation(x, 0, z)
+//      instance
+//    })
+    model.nodes.forEach { x =>
+      val id = x.id
+      val instance = new ModelInstance(model, id)
+      val node = instance.getNode(id)
+
+      //Why?
+      instance.transform.set(node.globalTransform)
+      node.translation.set(0, 0, 0)
+      node.scale.set(1,1,1)
+      node.rotation.idt()
+      instance.calculateTransforms()
+
+      instances += instance
+
+      if(id.equals("ship"))
+        ship = instance
+      else if (id.startsWith("Block"))
+        blocks += instance
+      else if (id.startsWith("Invader"))
+        invaders += instance
+    }
 
     loading = false
   }
