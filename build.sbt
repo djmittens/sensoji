@@ -2,7 +2,7 @@ val Organization = "me.ngrid.sensoji"
 
 //TODO: Add publishing settings.
 lazy val sensojii = (project in file(".")).settings(
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.12.2",
   scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
   publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
@@ -23,7 +23,7 @@ lazy val `server-util` = (project in file("server-util")).
     name := "rpc-server",
     organization := Organization,
     description := "Utilities for building rpc microservices",
-    scalaVersion := "2.12.1"
+    scalaVersion := "2.12.2"
   ).settings(libraryDependencies ++= dependencies.sensojiServer).
   settings(libraryDependencies += dependencies.catsLibrary).
   enablePlugins(JavaAppPackaging)

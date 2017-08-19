@@ -4,6 +4,9 @@
 target/
 *.blend1
 
+.ensime*
+
+
 ## Java
 
 *.class
