@@ -14,7 +14,7 @@ object FreeMonad {
       _ <- println("world")
     } yield ()
 
-    runS(hello zip hello)
+    println(runS(hello zaaap hello))
   }
 
   def runS[A](f: Free[Function0, A]): A = f.resume match {
@@ -44,17 +44,17 @@ object FreeMonad {
 
     final def map[B](f: A => B): Free[S, B] = flatMap((a) => Done(f(a)))
 
-    final def zip[B](f: Free[S, B])(implicit S: Functor[S]): Free[S, (A, B)] = (resume, f.resume) match {
+    final def zaaap[B](f: Free[S, B])(implicit S: Functor[S]): Free[S, (A, B)] = (resume, f.resume) match {
       case (Left(a), Left(b)) =>
         More(S.map(a) { x =>
-          More(S.map(b)(y => x zip y))
+          More(S.map(b)(y => x zaaap y))
         })
 
       case (Left(a), Right(b)) =>
-        More(S.map(a)(x => x zip Done(b)))
+        More(S.map(a)(x => x zaaap Done(b)))
 
       case (Right(b), Left(a)) =>
-        More(S.map(a)(x => Done(b) zip x ))
+        More(S.map(a)(x => Done(b) zaaap x ))
 
       case (Right(a), Right(b)) =>
         Done(a -> b)
