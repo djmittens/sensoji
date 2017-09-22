@@ -6,13 +6,17 @@ lazy val sensojii = (project in file(".")).settings(
   scalacOptions in(ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
   publishArtifact := false,
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
-).enablePlugins(ScalaUnidocPlugin).aggregate(`server-util`, odyssey)
+).enablePlugins(ScalaUnidocPlugin).
+  aggregate(`server-util`,
+            odyssey
+  )
 
 initialize := {
   val _ = initialize.value
   if (sys.props("java.specification.version") != "1.8")
     sys.error("Java 8 is required for this project.")
 }
+
 lazy val odyssey = sensoji.RPCService("odyssey", Organization).
   settings(libraryDependencies ++= dependencies.finagleHttp).
   enablePlugins(JavaAppPackaging).

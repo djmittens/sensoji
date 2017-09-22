@@ -1,14 +1,13 @@
 package me.ngrid.examples
 
 
-import com.badlogic.gdx.{ApplicationListener, Gdx}
-import com.badlogic.gdx.graphics.{Camera, GL20, PerspectiveCamera}
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g3d._
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader
 import com.badlogic.gdx.graphics.g3d.utils.{CameraInputController, DefaultTextureBinder, ModelBuilder, RenderContext}
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.graphics.{Camera, GL20, PerspectiveCamera}
 import com.badlogic.gdx.utils.GdxRuntimeException
+import com.badlogic.gdx.{ApplicationListener, Gdx}
 
 class ShaderTest extends ApplicationListener{
   var cam: PerspectiveCamera = _
@@ -16,7 +15,6 @@ class ShaderTest extends ApplicationListener{
   var shader: Shader = _
   var renderContext: RenderContext = _
   var model: Model = _
-  var env: Environment = _
   var rend: Renderable = _
 
   override def resume() = {}

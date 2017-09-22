@@ -1,17 +1,30 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        maven {url 'https://oss.jfrog.org/oss-snapshot-local'}
     }
     dependencies {
-        
-
+        classpath 'net.coacoas.gradle:ensime-gradle:0.3.0-SNAPSHOT'
     }
 }
+
+plugins {
+  id 'org.ensime.gradle' version '0.2.8'
+}
+
+// ensime {
+//   scalaVersion   '2.12'
+//   cacheDir       file('.ensime.cache.d')
+
+//   serverVersion  '2.0.0-SNAPSHOT'
+//   serverJarsDir  'build/ensime'
+
+//   javaFlags      '-Xlint', '-wahoowa'
+//   compilerArgs   '-Xlint'
+// }
 
 allprojects {
     apply plugin: "eclipse"
@@ -47,7 +60,6 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        
     }
 }
 
@@ -62,7 +74,6 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        
     }
 }
 
